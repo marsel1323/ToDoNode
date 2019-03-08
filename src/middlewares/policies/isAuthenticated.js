@@ -1,8 +1,9 @@
 const passport = require('passport');
 
+
 module.exports = async (req, res, next) => {
   if (process.env.NODE_ENV !== 'Production'
-    && req.header['user-agent'].includes('Postman')) {
+    && req.headers['user-agent'].includes('Postman')) {
     await next();
     return;
   }
