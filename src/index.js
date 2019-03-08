@@ -1,5 +1,6 @@
 const config = require('config');
 const server = require('./server');
+const { connect } = require('./databases');
 
 const { PORT } = config;
 
@@ -12,11 +13,13 @@ const listen = () => {
 
 const createServer = () => {
   listen();
+  connect();
   return server;
 };
 
 if (!module.parent) {
   listen();
+  connect();
 }
 
 
