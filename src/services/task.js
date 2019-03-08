@@ -14,19 +14,41 @@ const create = async ({ userId, title }) => {
   }
 };
 
-const get = (id) => {
+const get = async ({ userId, id }) => {
   try {
-
+    const task = await Task.findOne({ userId, _id: id });
+    console.log(task);
+    return task;
   } catch (error) {
     console.error(error);
+    return null;
   }
 };
 
-const list = () => {
+const list = async ({ userId }) => {
   try {
-
+    return Task.find({ userId });
   } catch (error) {
     console.error(error);
+    return null;
+  }
+};
+
+const update = async ({
+  userId, id, title, status,
+}) => {
+  try {
+    return Task.findOneAndUpdate(
+      { userId, _id: id },
+      { title, status },
+      (err, doc) => {
+        if (err) return err;
+        return doc;
+      },
+    );
+  } catch (error) {
+    console.error(error);
+    return null;
   }
 };
 
@@ -35,4 +57,5 @@ module.exports = {
   create,
   get,
   list,
+  update,
 };
