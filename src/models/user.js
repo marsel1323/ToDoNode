@@ -19,13 +19,13 @@ const UserSchema = new Schema({
 });
 
 UserSchema.virtual('password')
-  .set(function set(password) {
+  .set(async function set(password) {
     this.plainPassword = password;
     if (password) {
       const SALT_FACTOR = 10;
 
-      this.salt = bcrypt.genSalt(SALT_FACTOR);
-      this.passwordHash = bcrypt.hash(password, this.salt);
+      this.salt = bcrypt.genSaltSync(SALT_FACTOR);
+      this.passwordHash = bcrypt.hashSync(password, this.salt);
     } else {
       this.salt = undefined;
       this.passwordHash = undefined;
@@ -38,7 +38,7 @@ UserSchema.virtual('password')
 UserSchema.methods.checkPassword = function checkPassword(password) {
   if (!password) return false;
   if (!this.passwordHash) return false;
-  return bcrypt.compare(password, this.passwordHash);
+  return bcrypt.compareSync(password, this.passwordHash);
 };
 
 UserSchema.methods.setRefreshToken = function setRefreshToken(token) {

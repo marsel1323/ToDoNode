@@ -3,7 +3,7 @@ const passport = require('passport');
 const LocalStrategy = require('passport-local');
 const { ExtractJwt, Strategy: JwtStrategy } = require('passport-jwt');
 
-const User = require('../models');
+const { User } = require('../models');
 
 const { jwtsecret } = config.security;
 

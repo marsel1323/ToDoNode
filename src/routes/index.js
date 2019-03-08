@@ -2,6 +2,8 @@ const express = require('express');
 
 const router = express.Router();
 
+const auth = require('./auth');
+
 
 router.get('/api/status', (req, res) => {
   try {
@@ -11,6 +13,8 @@ router.get('/api/status', (req, res) => {
     res.status(500).send();
   }
 });
+
+router.use('/api', auth);
 
 
 module.exports = router;
