@@ -1,6 +1,8 @@
 const router = require('express').Router();
+
 const { task: taskService } = require('../services');
 const isAuthenticated = require('../middlewares/policies/isAuthenticated');
+
 
 router.post('/', isAuthenticated, async (req, res) => {
   try {
@@ -66,5 +68,6 @@ router.put('/:id', isAuthenticated, async (req, res) => {
     res.status(500).send();
   }
 });
+
 
 module.exports = router;

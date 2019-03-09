@@ -1,11 +1,8 @@
-const { User, Task } = require('../models');
+const { Task } = require('../models');
 
 
 const create = async ({ userId, title }) => {
   try {
-    // const user = await User.findById(userId);
-    // if(!user) throw new Error('User not found');
-
     const newTask = await Task.create({ userId, title, status: 0 });
     return newTask;
   } catch (error) {
@@ -17,7 +14,6 @@ const create = async ({ userId, title }) => {
 const get = async ({ userId, id }) => {
   try {
     const task = await Task.findOne({ userId, _id: id });
-    console.log(task);
     return task;
   } catch (error) {
     console.error(error);
