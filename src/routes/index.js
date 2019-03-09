@@ -3,7 +3,7 @@ const express = require('express');
 const router = express.Router();
 
 const auth = require('./auth');
-
+const task = require('./task');
 
 router.get('/api/status', (req, res) => {
   try {
@@ -15,6 +15,6 @@ router.get('/api/status', (req, res) => {
 });
 
 router.use('/api', auth);
-
+router.use('/api/task', task);
 
 module.exports = router;

@@ -2,12 +2,16 @@ const mongoose = require('mongoose');
 
 const { Schema } = mongoose;
 
-
+// status
+//   0      open
+//   1      closed/done
+//   2
 const TaskSchema = new Schema({
-	title: String,
-	status: Number,
+  userId: Schema.Types.ObjectId,
+  title: String,
+  status: Number,
 }, {
-	timestamps: true,
+  timestamps: true,
 });
 
 
