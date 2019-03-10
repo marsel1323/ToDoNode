@@ -27,12 +27,22 @@ const generateTokens = (user) => {
 };
 
 
-router.post('/register', async (req, res) => {
+router.post('/signup', async (req, res) => {
   try {
-    await User.create(req.body);
-    res.send();
+    const { email } = req.body;
+    const user = await User.findOne({ email });
+    if (user) {
+      res.status(400).send({ error: 'User already exists' });
+    } else {
+      const newUser = await User.create(req.body);
+      if (newUser) {
+        res.send(generateTokens(newUser));
+      } else {
+        res.status(401).send('Login failed');
+      }
+    }
   } catch (error) {
-    console.error(error);
+    console.error({ error: error.code });
     res.status(500).send();
   }
 });
@@ -40,7 +50,7 @@ router.post('/register', async (req, res) => {
 router.post('/login', async (req, res, next) => {
   await passport.authenticate('local', (err, user, message) => {
     if (user === false) {
-      res.status(401).send(message || 'Login failed');
+      res.status(400).send(message || 'Login failed');
     } else {
       res.send(generateTokens(user));
     }

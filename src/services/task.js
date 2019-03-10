@@ -3,18 +3,25 @@ const { Task } = require('../models');
 
 const create = async ({ userId, title }) => {
   try {
-    const newTask = await Task.create({ userId, title, status: 0 });
-    return newTask;
+    const task = await Task.create({ userId, title, status: 0 });
+    return {
+      id: task.id,
+      title: task.title,
+      status: task.status,
+    };
   } catch (error) {
     console.error(error);
     return null;
   }
 };
 
-const get = async ({ userId, id }) => {
+const get = ({ userId, id }) => {
   try {
-    const task = await Task.findOne({ userId, _id: id });
-    return task;
+    return Task.findOne({ userId, _id: id }, (err, doc) => ({
+      id: doc._id,
+      title: doc.title,
+      status: doc.status,
+    }));
   } catch (error) {
     console.error(error);
     return null;
@@ -23,23 +30,47 @@ const get = async ({ userId, id }) => {
 
 const list = async ({ userId }) => {
   try {
-    return Task.find({ userId });
+    const tasks = await Task.find({ userId });
+    return tasks.map(task => ({
+      id: task._id,
+      title: task.title,
+      status: task.status,
+    }));
   } catch (error) {
     console.error(error);
     return null;
   }
 };
 
-const update = async ({
-  userId, id, title, status,
-}) => {
+const update = async ({ id, title, status }) => {
   try {
-    return Task.findOneAndUpdate(
-      { userId, _id: id },
+    const updatedTask = await Task.findOneAndUpdate(
+      { _id: id },
       { title, status },
       (err, doc) => {
         if (err) return err;
         return doc;
+      },
+    );
+    return {
+      id: updatedTask._id,
+      title: updatedTask.title,
+      status: updatedTask.status,
+    };
+  } catch (error) {
+    console.error(error);
+    return null;
+  }
+};
+
+
+const remove = async ({ id }) => {
+  try {
+    return Task.findOneAndDelete(
+      { _id: id },
+      (err, doc) => {
+        if (err) return err;
+        return true;
       },
     );
   } catch (error) {
@@ -48,10 +79,10 @@ const update = async ({
   }
 };
 
-
 module.exports = {
   create,
   get,
   list,
   update,
+  remove,
 };

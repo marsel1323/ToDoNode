@@ -5,7 +5,7 @@ const { Schema } = mongoose;
 
 
 const UserSchema = new Schema({
-  login: String,
+  username: String,
   email: {
     type: String,
     required: 'e-mail is required',
@@ -33,6 +33,15 @@ UserSchema.virtual('password')
   })
   .get(function get() {
     return this.plainPassword;
+  });
+
+UserSchema.virtual('clientData')
+  .get(function get() {
+    return {
+      id: this._id,
+      username: this.username,
+      email: this.email,
+    };
   });
 
 UserSchema.methods.checkPassword = function checkPassword(password) {

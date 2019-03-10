@@ -12,21 +12,62 @@ test('Server works', async (t) => {
 
 // TODO: drop users collection
 
-test('Register', async (t) => {
-  const res = await server.post('/api/register')
-    .send({ login: 'Test', email: 'test@test.test', password: 'testtest' });
+test('Register success', async (t) => {
+  const res = await server.post('/api/auth/signup')
+    .send({ username: 'Test', email: 'test@test.test', password: 'testtest' });
+
   t.is(res.status, 200);
 });
 
-test('Login', async (t) => {
-  const res = await server.post('/api/login')
+test('Register fail, cause user already exists', async (t) => {
+  const res = await server.post('/api/auth/signup')
+    .send({ username: 'Test', email: 'test@test.test', password: 'testtest' });
+
+  t.is(res.status, 400);
+});
+
+test('Login success', async (t) => {
+  const res = await server.post('/api/auth/login')
     .send({ email: 'test@test.test', password: 'testtest' });
+
   t.is(res.status, 200);
+});
+
+test('Login fail, Missing credentials', async (t) => {
+  const res = await server.post('/api/auth/login')
+    .send({ email: 'test@test.test', password: '' });
+
+  t.is(res.status, 400);
 });
 
 test('Refresh token', async (t) => {
-  const { body: { refreshToken } } = await server.post('/api/login')
+  const { body: { refreshToken } } = await server.post('/api/auth/login')
     .send({ email: 'test@test.test', password: 'testtest' });
-  const res = await server.get(`/api/refresh-token/${refreshToken}`);
+
+  const res = await server.get(`/api/auth/refresh-token/${refreshToken}`);
+
   t.is(res.status, 200);
+});
+
+// TODO: drop tasks collection
+
+test('Task create success', async (t) => {
+  const { body: { accessToken } } = await server.post('/api/auth/login')
+    .send({ email: 'test@test.test', password: 'testtest' });
+
+  const res = await server.post('/api/task')
+    .set({
+      authorization: accessToken,
+      Accept: 'application/json',
+    })
+    .send({ title: '1' });
+
+  t.is(res.status, 200);
+});
+
+test('Task create fail, Not auth', async (t) => {
+  const res = await server.post('/api/task')
+    .send({ title: '1' });
+
+  t.is(res.status, 401);
 });

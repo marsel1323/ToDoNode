@@ -52,17 +52,28 @@ router.get('/', isAuthenticated, async (req, res) => {
 
 router.put('/:id', isAuthenticated, async (req, res) => {
   try {
-    const { user, body: { title, status }, params: { id } } = req;
+    const { body: { title, status }, params: { id } } = req;
 
-    const task = await taskService.update({
-      userId: user.id, id, title, status,
-    });
+    const task = await taskService.update({ id, title, status });
 
     if (task) {
       res.send(task);
     } else {
       res.status(404).send();
     }
+  } catch (error) {
+    console.error(error);
+    res.status(500).send();
+  }
+});
+
+router.delete('/:id', isAuthenticated, async (req, res) => {
+  try {
+    const { params: { id } } = req;
+
+    await taskService.remove({ id });
+
+    res.send();
   } catch (error) {
     console.error(error);
     res.status(500).send();

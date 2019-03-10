@@ -14,7 +14,7 @@ router.get('/api/status', (req, res) => {
   }
 });
 
-router.use('/api', auth);
+router.use('/api/auth', auth);
 router.use('/api/task', task);
 
 module.exports = router;

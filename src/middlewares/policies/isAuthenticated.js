@@ -2,11 +2,6 @@ const passport = require('passport');
 
 
 module.exports = async (req, res, next) => {
-  if (process.env.NODE_ENV !== 'Production'
-    && req.headers['user-agent'].includes('Postman')) {
-    await next();
-    return;
-  }
   await passport.authenticate('jwt', async (err, user) => {
     if (user) {
       req.user = user;
